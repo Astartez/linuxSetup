@@ -2,6 +2,8 @@
 
 # Check if curl is installed
 command -v curl >/dev/null 2>&1 || { echo "I require curl but it's not installed.  Aborting." >&2; exit 1; }
+command -v apt >/dev/null 2>&1 || { echo "I require curl but it's not installed.  Aborting." >&2; exit 1; }
+command -v git >/dev/null 2>&1 || { echo "I require curl but it's not installed.  Aborting." >&2; exit 1; }
 
 printf "======| Installing fish...\n"
 sudo apt-add-repository ppa:fish-shell/release-3
