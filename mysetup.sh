@@ -26,15 +26,6 @@ sudo apt-get install xclip
 
 printf "\n======| Installing grc and configuring ll...\n"
 sudo apt install grc
-echo "source /etc/grc.fish" >> ~/.config/fish/config.fish
-sudo bash -c 'cat > /usr/share/fish/functions/ll.fish << EOF
-#
-# These are very common and useful
-#
-function ll --description "List contents of directory using long format"
-    ls -lhF --group-directories-first --color=always \$argv
-end
-EOF
-'
+# fish -c "fisher add orefalo/grc"
 
 printf "\n======| End of installation.\n"
