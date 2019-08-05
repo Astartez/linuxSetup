@@ -32,7 +32,7 @@ sudo bash -c 'cat > /usr/share/fish/functions/ll.fish << EOF
 # These are very common and useful
 #
 function ll --description "List contents of directory using long format"
-    ls -lhF --group-directories-first --color=always $argv
+    ls -lhF --group-directories-first --color=always \$argv
 end
 EOF
 '
