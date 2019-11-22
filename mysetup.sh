@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Check if sudo (shouldn't be)
+[ "$(id -u)" -eq 0 ] && printf "This script must NOT be run using sudo!\n" && exit 1
+
 # Check if curl is installed
 command -v curl >/dev/null 2>&1 || { echo "I require curl but it's not installed.  Aborting." >&2; exit 1; }
 command -v apt >/dev/null 2>&1 || { echo "I require apt but it's not installed.  Aborting." >&2; exit 1; }
