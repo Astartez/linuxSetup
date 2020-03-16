@@ -9,7 +9,15 @@ command -v apt >/dev/null 2>&1 || { echo "I require apt but it's not installed. 
 command -v git >/dev/null 2>&1 || { echo "I require git but it's not installed.  Aborting." >&2; exit 1; }
 
 printf "======| Installing fish...\n"
-sudo apt-add-repository ppa:fish-shell/release-3
+if [[ $(lsb_release -i) == *"Debian"* ]]; then
+        if [[ $(lsb_release -i) == *"10"* ]]; then
+                echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' > /etc/apt/sources.list.d/shells:fish:release:3.list
+                wget -nv https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key -O Release.key
+                apt-key add - < Release.key
+        fi
+else
+        sudo apt-add-repository ppa:fish-shell/release-3
+fi
 sudo apt-get update
 sudo apt-get install fish
 
