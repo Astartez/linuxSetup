@@ -18,13 +18,13 @@ if [[ $(lsb_release -i) == *"Debian"* ]]; then
 else
         sudo apt-add-repository ppa:fish-shell/release-3
 fi
-sudo apt-get update
-sudo apt-get install fish
+sudo apt update
+sudo apt install fish
 
 printf "\n======| Installing fisher + pure theme + colored man pages...\n"
-curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
-fish -c "fisher add rafaelrinaldi/pure"
-fish -c "fisher add decors/fish-colored-man"
+fish -c "curl -sL git.io/fisher | source && fisher install jorgebucaran/fisher"
+fish -c "fisher install rafaelrinaldi/pure"
+fish -c "fisher install decors/fish-colored-man"
 
 printf "\n======| Installing fzf...\n"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -33,7 +33,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 printf "\n======| Installing micro...\n"
 cd /usr/local/bin; curl https://getmic.ro | sudo bash
 cd
-sudo apt-get install xclip
+sudo apt install xclip
 
 printf "\n======| Installing grc and configuring ll...\n"
 sudo apt install grc
