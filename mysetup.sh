@@ -7,22 +7,20 @@
 command -v curl >/dev/null 2>&1 || { echo "I require curl but it's not installed.  Aborting." >&2; exit 1; }
 command -v apt >/dev/null 2>&1 || { echo "I require apt but it's not installed.  Aborting." >&2; exit 1; }
 command -v git >/dev/null 2>&1 || { echo "I require git but it's not installed.  Aborting." >&2; exit 1; }
+command -v gpg >/dev/null 2>&1 || { echo "I require gpg but it's not installed.  Aborting." >&2; exit 1; }
 
 printf "======| Installing fish...\n"
-if [[ $(lsb_release -i) == *"Debian"* ]]; then
-        if [[ $(lsb_release -i) == *"10"* ]]; then
-                echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' > /etc/apt/sources.list.d/shells:fish:release:3.list
-                wget -nv https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key -O Release.key
-                apt-key add - < Release.key
-        fi
+if [[ $(cat /etc/os-release | head -n1) == *"Debian"* && $(cat /etc/os-release | head -n1) == *"10"* ]]; then
+	echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
+	curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
 else
-        sudo apt-add-repository ppa:fish-shell/release-3
+	sudo apt-add-repository ppa:fish-shell/release-3
 fi
 sudo apt update
 sudo apt install fish
 
 printf "\n======| Installing fisher + pure theme + colored man pages...\n"
-fish -c "curl -sL git.io/fisher | source && fisher install jorgebucaran/fisher"
+fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
 fish -c "fisher install rafaelrinaldi/pure"
 fish -c "fisher install decors/fish-colored-man"
 
@@ -31,13 +29,13 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 
 printf "\n======| Installing micro...\n"
-cd /usr/local/bin; curl https://getmic.ro | sudo bash
-cd
+curl https://getmic.ro | sudo bash
+sudo mv micro /usr/bin
 sudo apt install xclip
 
 printf "\n======| Installing grc and configuring ll...\n"
 sudo apt install grc
-fish -c "fisher add orefalo/grc"
+fish -c "fisher install orefalo/grc"
 sudo bash -c 'cat > /usr/share/fish/functions/ll.fish << EOF
 #
 # These are very common and useful
