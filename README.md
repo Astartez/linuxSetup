@@ -2,7 +2,7 @@
 Script for setting up common tools in a Debian/Ubuntu environment
 
 - fish (shell)
-- fisher (rafaelrinaldi/pure & decors/fish-colored-man)
+- fisher (pure-fish/pure & decors/fish-colored-man)
 - fzf (fuzzy search)
 - micro (editor)
 - grc (colored outputs) + ll config
