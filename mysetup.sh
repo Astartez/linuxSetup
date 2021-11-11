@@ -3,43 +3,89 @@
 # Check if sudo (shouldn't be)
 [ "$(id -u)" -eq 0 ] && printf "This script must NOT be run using sudo!\n" && exit 1
 
-# Check if curl is installed
-command -v curl >/dev/null 2>&1 || { echo "I require curl but it's not installed.  Aborting." >&2; exit 1; }
-command -v apt >/dev/null 2>&1 || { echo "I require apt but it's not installed.  Aborting." >&2; exit 1; }
-command -v git >/dev/null 2>&1 || { echo "I require git but it's not installed.  Aborting." >&2; exit 1; }
-command -v gpg >/dev/null 2>&1 || { echo "I require gpg but it's not installed.  Aborting." >&2; exit 1; }
+# Generic dependency checking function. Requires (only) one parameter.
+function check_dependency {
+    if [[ $# != 1 ]]; then
+        echo "Error: function check_dependency requires (only) one parameter. Aborting."
+        exit 1
+    fi
+    command -v $1 >/dev/null 2>&1 || { echo "I require $1 but it's not installed.  Aborting." >&2; exit 1; }
+}
 
-printf "======| Installing fish...\n"
-if [[ $(cat /etc/debian_version) == "10"* ]]; then # debian 10
-	echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
-	curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
-elif [[ $(cat /etc/debian_version) == "11"* ]]; then # debian 11
-	echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_11/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
-	curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_11/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
-else # ubuntu
-	sudo apt-add-repository ppa:fish-shell/release-3
+current_install_string="fish"
+printf "======| Do you want to install $current_install_string? [Y/n]\n"
+read user_input
+if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    check_dependency curl
+    check_dependency gpg
+    check_dependency apt
+    if [[ $(cat /etc/debian_version) == "10"* ]]; then # debian 10
+            echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
+            curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
+    elif [[ $(cat /etc/debian_version) == "11"* ]]; then # debian 11
+            echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_11/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
+            curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_11/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
+    else # ubuntu
+            sudo apt-add-repository ppa:fish-shell/release-3
+    fi
+    sudo apt update
+    sudo apt install fish
+else
+    printf "======| Skipping $current_install_string installation...\n"
 fi
-sudo apt update
-sudo apt install fish
 
-printf "\n======| Installing fisher + pure theme + colored man pages...\n"
-fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
-fish -c "fisher install pure-fish/pure"
-fish -c "fisher install decors/fish-colored-man"
+current_install_string="fisher + pure theme + colored man pages"
+printf "======| Do you want to install $current_install_string? [Y/n]\n"
+read user_input
+if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    check_dependency fish
+    check_dependency curl
+    fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
+    fish -c "fisher install pure-fish/pure"
+    fish -c "fisher install decors/fish-colored-man"
+else
+    printf "======| Skipping $current_install_string installation...\n"
+fi
 
-printf "\n======| Installing fzf...\n"
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+current_install_string="fzf"
+printf "======| Do you want to install $current_install_string? [Y/n]\n"
+read user_input
+if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    check_dependency git
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+else
+    printf "======| Skipping $current_install_string installation...\n"
+fi
 
-printf "\n======| Installing micro...\n"
-curl https://getmic.ro | sudo bash
-sudo mv micro /usr/bin
-sudo apt install xclip
 
-printf "\n======| Installing grc and configuring ll...\n"
-sudo apt install grc
-fish -c "fisher install orefalo/grc"
-sudo bash -c 'cat > /usr/share/fish/functions/ll.fish << EOF
+current_install_string="micro"
+printf "======| Do you want to install $current_install_string? [Y/n]\n"
+read user_input
+if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    check_dependency curl
+    check_dependency apt
+    curl https://getmic.ro | sudo bash
+    sudo mv micro /usr/bin
+    sudo apt install xclip
+else
+    printf "======| Skipping $current_install_string installation...\n"
+fi
+
+
+current_install_string="grc and ll config"
+printf "======| Do you want to install $current_install_string? [Y/n]\n"
+read user_input
+if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    check_dependency apt
+    sudo apt install grc
+    fish -c "fisher install orefalo/grc"
+    sudo bash -c 'cat > ./test.fish << EOF
 #
 # These are very common and useful
 #
@@ -47,6 +93,9 @@ function ll --description "List contents of directory using long format"
     ls -lh --group-directories-first --color=always \$argv
 end
 EOF
-'
+    '
+else
+    printf "======| Skipping $current_install_string installation...\n"
+fi
 
 printf "\n======| End of installation.\n"
