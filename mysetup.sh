@@ -13,9 +13,9 @@ function check_dependency {
 }
 
 current_install_string="fish"
-printf "======| Do you want to install $current_install_string? [Y/n]\n"
+printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency curl
     check_dependency gpg
@@ -36,9 +36,9 @@ else
 fi
 
 current_install_string="fisher + pure theme + colored man pages"
-printf "======| Do you want to install $current_install_string? [Y/n]\n"
+printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency fish
     check_dependency curl
@@ -50,9 +50,9 @@ else
 fi
 
 current_install_string="fzf"
-printf "======| Do you want to install $current_install_string? [Y/n]\n"
+printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency git
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -61,11 +61,10 @@ else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
-
 current_install_string="micro"
-printf "======| Do you want to install $current_install_string? [Y/n]\n"
+printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency curl
     check_dependency apt
@@ -76,11 +75,10 @@ else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
-
 current_install_string="grc and ll config"
-printf "======| Do you want to install $current_install_string? [Y/n]\n"
+printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "Y" || $user_input == "y" ]]; then
+if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency apt
     sudo apt install grc
@@ -94,6 +92,16 @@ function ll --description "List contents of directory using long format"
 end
 EOF
     '
+else
+    printf "======| Skipping $current_install_string installation...\n"
+fi
+
+current_install_string="audio power save fix"
+printf "======| Do you want to install $current_install_string? (yes/[no])\n"
+read user_input
+if [[ $user_input == "" || $user_input == "no" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
