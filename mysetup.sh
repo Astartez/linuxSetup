@@ -13,7 +13,7 @@ function check_dependency {
 }
 
 current_install_string="fish"
-printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
@@ -36,7 +36,7 @@ else
 fi
 
 current_install_string="fisher + pure theme + colored man pages"
-printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
@@ -45,12 +45,21 @@ if [[ $user_input == "" || $user_input == "yes" ]]; then
     fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
     fish -c "fisher install pure-fish/pure"
     fish -c "fisher install decors/fish-colored-man"
+    # Set syntax highlighting variables
+    fish -c "set -U fish_color_command 0087ff"
+    fish -c "set -U fish_color_quote ffd700"
+    fish -c "set -U fish_color_redirection 00d7af"
+    fish -c "set -U fish_color_end 00d75f"
+    fish -c "set -U fish_color_error ff005f"
+    fish -c "set -U fish_color_param 00d7ff"
+    fish -c "set -U fish_color_comment 808080"
+    fish -c "set -U fish_color_autosuggestion 949494"
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="fzf"
-printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
@@ -62,7 +71,7 @@ else
 fi
 
 current_install_string="micro"
-printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
@@ -76,14 +85,14 @@ else
 fi
 
 current_install_string="grc and ll config"
-printf "======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency apt
     sudo apt install grc
     fish -c "fisher install orefalo/grc"
-    sudo bash -c 'cat > ./test.fish << EOF
+    sudo bash -c 'cat > /usr/share/fish/functions/ll.fish << EOF
 #
 # These are very common and useful
 #
@@ -96,12 +105,18 @@ else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="audio power save fix"
-printf "======| Do you want to install $current_install_string? (yes/[no])\n"
+current_install_string="audio power save fix + scripts"
+printf "\n======| Do you want to install $current_install_string? (yes/[no])\n"
 read user_input
 if [[ $user_input == "" || $user_input == "no" ]]; then
     printf "======| Installing $current_install_string...\n"
+    # power save fix
     sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
+    # copy scripts + install notification system
+    mkdir ~/scripts
+    cp ./scripts/audio_input_mute_toggle.sh ~/scripts/audio_input_mute_toggle.sh
+    cp ./scripts/audio_output_toggle.sh ~/scripts/audio_output_toggle.sh
+    sudo apt install libnotify-bin
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
