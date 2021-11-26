@@ -108,7 +108,7 @@ fi
 current_install_string="audio power save fix + scripts"
 printf "\n======| Do you want to install $current_install_string? (yes/[no])\n"
 read user_input
-if [[ $user_input == "" || $user_input == "no" ]]; then
+if [[ $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
     # power save fix
     sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
