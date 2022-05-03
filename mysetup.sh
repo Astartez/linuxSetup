@@ -92,15 +92,8 @@ if [[ $user_input == "" || $user_input == "yes" ]]; then
     check_dependency apt
     sudo apt install grc
     fish -c "fisher install orefalo/grc"
-    sudo bash -c 'cat > /usr/share/fish/functions/ll.fish << EOF
-#
-# These are very common and useful
-#
-function ll --description "List contents of directory using long format"
-    ls -lh --group-directories-first --color=always \$argv
-end
-EOF
-    '
+    sudo sed -i 's/ls -lh $argv/ls -lh --group-directories-first $argv/g' /usr/share/fish/functions/ll.fish
+    sudo sed -i 's/ls -lAh $argv/ls -lAh --group-directories-first $argv/g' /usr/share/fish/functions/la.fish
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
