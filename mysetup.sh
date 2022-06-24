@@ -27,9 +27,9 @@ base_dir=$(dirname $(realpath $0))
 # ========================================
 
 current_install_string="fish"
-printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "yes" ]]; then
+if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency curl
     check_dependency gpg
@@ -50,9 +50,9 @@ else
 fi
 
 current_install_string="fisher + pure theme + colored man pages + fish colors"
-printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "yes" ]]; then
+if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency fish
     check_dependency curl
@@ -73,9 +73,9 @@ else
 fi
 
 current_install_string="fzf"
-printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "yes" ]]; then
+if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency git
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -85,9 +85,9 @@ else
 fi
 
 current_install_string="micro"
-printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "yes" ]]; then
+if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency curl
     check_dependency apt
@@ -99,9 +99,9 @@ else
 fi
 
 current_install_string="grc and fish functions (ll;la;apt)"
-printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
+printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
 read user_input
-if [[ $user_input == "" || $user_input == "yes" ]]; then
+if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency apt
     sudo apt install grc
@@ -114,9 +114,9 @@ else
 fi
 
 current_install_string="audio scripts + libnotify"
-printf "\n======| Do you want to install $current_install_string? (yes/[no])\n"
+printf "\n======| Do you want to install $current_install_string? (y/[n])\n"
 read user_input
-if [[ $user_input == "yes" ]]; then
+if [[ $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     mkdir ~/scripts
     cp $base_dir/scripts/audio_input_mute_toggle.sh ~/scripts
@@ -129,9 +129,9 @@ else
 fi
 
 current_install_string="audio power save fix"
-printf "\n======| Do you want to install $current_install_string? (yes/[no])\n"
+printf "\n======| Do you want to install $current_install_string? (y/[n])\n"
 read user_input
-if [[ $user_input == "yes" ]]; then
+if [[ $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
 else
