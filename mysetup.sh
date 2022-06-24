@@ -93,7 +93,10 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     check_dependency apt
     curl https://getmic.ro | sudo bash
     sudo mv micro /usr/bin
-    sudo apt install xclip
+    # If X server is running install xclip
+    if timeout 1s xset q &>/dev/null; then
+        sudo apt install xclip
+    fi
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
