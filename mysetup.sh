@@ -3,6 +3,8 @@
 # Check if sudo (shouldn't be)
 [ "$(id -u)" -eq 0 ] && printf "This script must NOT be run using sudo!\n" && exit 1
 
+printf "======| Initializing setup.. don't look away, I need you to answer some questions.. \n"
+
 # ========================================
 # FUNCTIONS
 # ========================================
@@ -46,7 +48,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     sudo apt update
     sudo apt install fish
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="fisher + pure theme + colored man pages + fish colors"
@@ -69,7 +71,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
         set -U fish_color_comment 808080;
         set -U fish_color_autosuggestion 949494"
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="fzf"
@@ -81,7 +83,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="micro"
@@ -98,7 +100,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
         sudo apt install xclip
     fi
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="grc and fish functions (ll;la;apt)"
@@ -113,7 +115,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     sudo sed -i 's/ls -lAh $argv/ls -lAh --group-directories-first $argv/g' /usr/share/fish/functions/la.fish
     sudo cp $base_dir/fish_functions/apt-update-upgrade-autoremove-clean.fish
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="audio scripts + libnotify"
@@ -128,7 +130,7 @@ if [[ $user_input == "y" ]]; then
     # notification system (kde)
     sudo apt install libnotify-bin
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
 current_install_string="audio power save fix"
@@ -138,7 +140,7 @@ if [[ $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
 else
-    printf "======| Skipping $current_install_string installation...\n"
+    printf "Skipping $current_install_string installation...\n"
 fi
 
-printf "\n======| End of installation.\n"
+printf "\n======| End of setup :).\n"
