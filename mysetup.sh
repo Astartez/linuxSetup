@@ -3,6 +3,10 @@
 # Check if sudo (shouldn't be)
 [ "$(id -u)" -eq 0 ] && printf "This script must NOT be run using sudo!\n" && exit 1
 
+# ========================================
+# FUNCTIONS
+# ========================================
+
 # Generic dependency checking function. Requires (only) one parameter.
 function check_dependency {
     if [[ $# != 1 ]]; then
@@ -11,6 +15,16 @@ function check_dependency {
     fi
     command -v $1 >/dev/null 2>&1 || { echo "I require $1 but it's not installed.  Aborting." >&2; exit 1; }
 }
+
+# ========================================
+# VARIABLES
+# ========================================
+
+base_dir=$(dirname $(realpath $0))
+
+# ========================================
+# RUN
+# ========================================
 
 current_install_string="fish"
 printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
@@ -35,7 +49,7 @@ else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="fisher + pure theme + colored man pages"
+current_install_string="fisher + pure theme + colored man pages + fish colors"
 printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
@@ -45,15 +59,15 @@ if [[ $user_input == "" || $user_input == "yes" ]]; then
     fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
     fish -c "fisher install pure-fish/pure"
     fish -c "fisher install decors/fish-colored-man"
-    # Set syntax highlighting variables
-    fish -c "set -U fish_color_command 0087ff"
-    fish -c "set -U fish_color_quote ffd700"
-    fish -c "set -U fish_color_redirection 00d7af"
-    fish -c "set -U fish_color_end 00d75f"
-    fish -c "set -U fish_color_error ff005f"
-    fish -c "set -U fish_color_param 00d7ff"
-    fish -c "set -U fish_color_comment 808080"
-    fish -c "set -U fish_color_autosuggestion 949494"
+    # fish colors: Set syntax highlighting variables
+    fish -c "set -U fish_color_command 0087ff;
+        set -U fish_color_quote ffd700;
+        set -U fish_color_redirection 00d7af;
+        set -U fish_color_end 00d75f;
+        set -U fish_color_error ff005f;
+        set -U fish_color_param 00d7ff;
+        set -U fish_color_comment 808080;
+        set -U fish_color_autosuggestion 949494"
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
@@ -84,7 +98,7 @@ else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="grc and ll config"
+current_install_string="grc and fish functions (ll;la;apt)"
 printf "\n======| Do you want to install $current_install_string? ([yes]/no)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "yes" ]]; then
@@ -94,22 +108,32 @@ if [[ $user_input == "" || $user_input == "yes" ]]; then
     fish -c "fisher install orefalo/grc"
     sudo sed -i 's/ls -lh $argv/ls -lh --group-directories-first $argv/g' /usr/share/fish/functions/ll.fish
     sudo sed -i 's/ls -lAh $argv/ls -lAh --group-directories-first $argv/g' /usr/share/fish/functions/la.fish
+    sudo cp $base_dir/fish_functions/apt-update-upgrade-autoremove-clean.fish
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="audio power save fix + scripts"
+current_install_string="audio scripts + libnotify"
 printf "\n======| Do you want to install $current_install_string? (yes/[no])\n"
 read user_input
 if [[ $user_input == "yes" ]]; then
     printf "======| Installing $current_install_string...\n"
-    # power save fix
-    sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
-    # copy scripts + install notification system
     mkdir ~/scripts
-    cp ./scripts/audio_input_mute_toggle.sh ~/scripts/audio_input_mute_toggle.sh
-    cp ./scripts/audio_output_toggle.sh ~/scripts/audio_output_toggle.sh
+    cp $base_dir/scripts/audio_input_mute_toggle.sh ~/scripts
+    cp $base_dir/scripts/audio_output_toggle.sh ~/scripts
+    cp $base_dir/scripts/audio_output_headphone_monitor.py ~/scripts
+    # notification system (kde)
     sudo apt install libnotify-bin
+else
+    printf "======| Skipping $current_install_string installation...\n"
+fi
+
+current_install_string="audio power save fix"
+printf "\n======| Do you want to install $current_install_string? (yes/[no])\n"
+read user_input
+if [[ $user_input == "yes" ]]; then
+    printf "======| Installing $current_install_string...\n"
+    sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
 else
     printf "======| Skipping $current_install_string installation...\n"
 fi
