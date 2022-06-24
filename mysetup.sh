@@ -35,7 +35,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency curl
     check_dependency gpg
-    check_dependency apt
+    check_dependency apt-get
     if [[ $(cat /etc/debian_version) == "10"* ]]; then # debian 10
             echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
             curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
@@ -45,8 +45,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     else # ubuntu
             sudo apt-add-repository ppa:fish-shell/release-3
     fi
-    sudo apt update
-    sudo apt install fish
+    sudo apt-get update && sudo apt-get install --no-install-recommends --yes fish
 else
     printf "Skipping $current_install_string installation...\n"
 fi
@@ -92,12 +91,12 @@ read user_input
 if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
     check_dependency curl
-    check_dependency apt
+    check_dependency apt-get
     curl https://getmic.ro | sudo bash
     sudo mv micro /usr/bin
     # If X server is running install xclip
     if timeout 1s xset q &>/dev/null; then
-        sudo apt install xclip
+        sudo apt-get update && sudo apt-get install --no-install-recommends --yes xclip
     fi
 else
     printf "Skipping $current_install_string installation...\n"
@@ -108,8 +107,8 @@ printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
 read user_input
 if [[ $user_input == "" || $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
-    check_dependency apt
-    sudo apt install grc
+    check_dependency apt-get
+    sudo apt-get update && sudo apt-get install --no-install-recommends --yes grc
     fish -c "fisher install orefalo/grc"
     sudo sed -i 's/ls -lh $argv/ls -lh --group-directories-first $argv/g' /usr/share/fish/functions/ll.fish
     sudo sed -i 's/ls -lAh $argv/ls -lAh --group-directories-first $argv/g' /usr/share/fish/functions/la.fish
@@ -128,7 +127,8 @@ if [[ $user_input == "y" ]]; then
     cp $base_dir/scripts/audio_output_toggle.sh ~/scripts
     cp $base_dir/scripts/audio_output_headphone_monitor.py ~/scripts
     # notification system (kde)
-    sudo apt install libnotify-bin
+    check_dependency apt-get
+    sudo apt-get update && sudo apt-get install --no-install-recommends --yes libnotify-bin
 else
     printf "Skipping $current_install_string installation...\n"
 fi
