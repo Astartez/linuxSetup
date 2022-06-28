@@ -1,0 +1,28 @@
+#!/usr/bin/pulseaudio -nF
+#
+# PulseAudio configuration file
+#
+# This file is a startup script and is used to configure modules. It is 
+# actually parsed and read after the daemon has finished initializing and 
+# additional commands can be sent at runtime using pactl(1) or pacmd(1). 
+# The startup script can also be provided on the command line by starting 
+# PulseAudio in a terminal using pulseaudio -nC. This will make the daemon 
+# load the CLI module and will accept the configuration directly from the 
+# command line, and output resulting information or error messages on the 
+# same terminal. This can be useful when debugging the daemon or just to 
+# test various modules before setting them permanently on disk. The manual 
+# page is quite self-explanatory, consult pulse-cli-syntax(5) for the 
+# details of the syntax. 
+
+### Rather than being a complete copy, ~/.config/pulse/default.pa can start 
+### with the line .include /etc/pulse/default.pa and then just override 
+### the defaults.
+.include /etc/pulse/default.pa
+
+### Disable automatic port switch on "headphone" connect
+unload-module module-switch-on-port-available
+
+### Enable Echo/Noise-Cancellation
+load-module module-echo-cancel use_master_format=1 aec_method=webrtc aec_args="analog_gain_control=0\ digital_gain_control=1" source_name=echoCancel_source sink_name=echoCancel_sink
+set-default-source echoCancel_source
+# set-default-sink echoCancel_sink

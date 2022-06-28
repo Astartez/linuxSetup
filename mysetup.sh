@@ -37,11 +37,11 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     check_dependency gpg
     check_dependency apt-get
     if [[ $(cat /etc/debian_version) == "10"* ]]; then # debian 10
-            echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
-            curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
+        echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
+        curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
     elif [[ $(cat /etc/debian_version) == "11"* ]]; then # debian 11
-            echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_11/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
-            curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_11/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
+        echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_11/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:3.list
+        curl -fsSL https://download.opensuse.org/repositories/shells:fish:release:3/Debian_11/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish_release_3.gpg > /dev/null
     else # ubuntu
             sudo apt-add-repository ppa:fish-shell/release-3
     fi
@@ -112,7 +112,7 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     fish -c "fisher install orefalo/grc"
     sudo sed -i 's/ls -lh $argv/ls -lh --group-directories-first $argv/g' /usr/share/fish/functions/ll.fish
     sudo sed -i 's/ls -lAh $argv/ls -lAh --group-directories-first $argv/g' /usr/share/fish/functions/la.fish
-    sudo cp $base_dir/fish_functions/apt-update-upgrade-autoremove-clean.fish
+    sudo cp $base_dir/config_files/fish_functions/apt-update-upgrade-autoremove-clean.fish ~/.config/fish/functions/
 else
     printf "Skipping $current_install_string installation...\n"
 fi
@@ -133,12 +133,20 @@ else
     printf "Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="audio power save fix"
+# Audio power save fix: 
+#   Fixes annoying ticking sound when linux no audio output.
+# PulseAudio configuration file: 
+#   Disable automatic switching between outputs.
+#   Enable Echo/Noise-Cancellation on input
+current_install_string="audio fixes"
 printf "\n======| Do you want to install $current_install_string? (y/[n])\n"
 read user_input
 if [[ $user_input == "y" ]]; then
     printf "======| Installing $current_install_string...\n"
+    # Audio power save fix
     sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
+    # PulseAudio configuration file
+    mkdir -p ~/.config/pulse && cp $base_dir/config_files/pulse/default.pa ~/.config/pulse
 else
     printf "Skipping $current_install_string installation...\n"
 fi
