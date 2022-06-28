@@ -134,7 +134,7 @@ else
 fi
 
 # Audio power save fix: 
-#   Fixes annoying ticking sound when linux no audio output.
+#   Fixes annoying ticking sound when no active audio output.
 # PulseAudio configuration file: 
 #   Disable automatic switching between outputs.
 #   Enable Echo/Noise-Cancellation on input
