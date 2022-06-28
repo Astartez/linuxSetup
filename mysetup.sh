@@ -18,6 +18,34 @@ function check_dependency {
     command -v $1 >/dev/null 2>&1 || { echo "I require $1 but it's not installed.  Aborting." >&2; exit 1; }
 }
 
+# Ask user if $1 should be installed (default option yes)
+function check_if_install_yes {
+    local current_install_string=$1
+    printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
+    read user_input
+    if [[ $user_input == "" || $user_input == "y" ]]; then
+        printf "======| Installing $current_install_string...\n"
+        return 0
+    else
+        printf "Skipping $current_install_string installation...\n"
+        return 1
+    fi
+}
+
+# Ask user if $1 should be installed (default option no)
+function check_if_install_no {
+    local current_install_string=$1
+    printf "\n======| Do you want to install $current_install_string? (y/[n])\n"
+    read user_input
+    if [[ $user_input == "y" ]]; then
+        printf "======| Installing $current_install_string...\n"
+        return 0
+    else
+        printf "Skipping $current_install_string installation...\n"
+        return 1
+    fi
+}
+
 # ========================================
 # VARIABLES
 # ========================================
@@ -28,11 +56,7 @@ base_dir=$(dirname $(realpath $0))
 # RUN
 # ========================================
 
-current_install_string="fish"
-printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
-read user_input
-if [[ $user_input == "" || $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_yes "fish"; then
     check_dependency curl
     check_dependency gpg
     check_dependency apt-get
@@ -46,15 +70,9 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
             sudo apt-add-repository ppa:fish-shell/release-3
     fi
     sudo apt-get update && sudo apt-get install --no-install-recommends --yes fish
-else
-    printf "Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="fisher + pure theme + colored man pages + fish colors"
-printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
-read user_input
-if [[ $user_input == "" || $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_yes "fisher + pure theme + colored man pages + fish colors"; then
     check_dependency fish
     check_dependency curl
     fish -c "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
@@ -69,27 +87,15 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
         set -U fish_color_param 00d7ff;
         set -U fish_color_comment 808080;
         set -U fish_color_autosuggestion 949494"
-else
-    printf "Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="fzf"
-printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
-read user_input
-if [[ $user_input == "" || $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_yes "fzf"; then
     check_dependency git
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install
-else
-    printf "Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="micro"
-printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
-read user_input
-if [[ $user_input == "" || $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_yes "micro"; then
     check_dependency curl
     check_dependency apt-get
     curl https://getmic.ro | sudo bash
@@ -98,30 +104,18 @@ if [[ $user_input == "" || $user_input == "y" ]]; then
     if timeout 1s xset q &>/dev/null; then
         sudo apt-get update && sudo apt-get install --no-install-recommends --yes xclip
     fi
-else
-    printf "Skipping $current_install_string installation...\n"
 fi
 
-current_install_string="grc and fish functions (ll;la;apt)"
-printf "\n======| Do you want to install $current_install_string? ([y]/n)\n"
-read user_input
-if [[ $user_input == "" || $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_yes "grc and fish functions (ll;la;apt)"; then
     check_dependency apt-get
     sudo apt-get update && sudo apt-get install --no-install-recommends --yes grc
     fish -c "fisher install orefalo/grc"
     sudo sed -i 's/ls -lh $argv/ls -lh --group-directories-first $argv/g' /usr/share/fish/functions/ll.fish
     sudo sed -i 's/ls -lAh $argv/ls -lAh --group-directories-first $argv/g' /usr/share/fish/functions/la.fish
-    sudo cp $base_dir/config_files/fish_functions/apt-update-upgrade-autoremove-clean.fish ~/.config/fish/functions/
-else
-    printf "Skipping $current_install_string installation...\n"
+    cp $base_dir/config_files/fish_functions/apt-update-upgrade-autoremove-clean.fish ~/.config/fish/functions/
 fi
 
-current_install_string="audio scripts + libnotify"
-printf "\n======| Do you want to install $current_install_string? (y/[n])\n"
-read user_input
-if [[ $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_no "audio scripts + libnotify"; then
     mkdir ~/scripts
     cp $base_dir/scripts/audio_input_mute_toggle.sh ~/scripts
     cp $base_dir/scripts/audio_output_toggle.sh ~/scripts
@@ -129,8 +123,6 @@ if [[ $user_input == "y" ]]; then
     # notification system (kde)
     check_dependency apt-get
     sudo apt-get update && sudo apt-get install --no-install-recommends --yes libnotify-bin
-else
-    printf "Skipping $current_install_string installation...\n"
 fi
 
 # Audio power save fix: 
@@ -138,17 +130,11 @@ fi
 # PulseAudio configuration file: 
 #   Disable automatic switching between outputs.
 #   Enable Echo/Noise-Cancellation on input
-current_install_string="audio fixes"
-printf "\n======| Do you want to install $current_install_string? (y/[n])\n"
-read user_input
-if [[ $user_input == "y" ]]; then
-    printf "======| Installing $current_install_string...\n"
+if check_if_install_no "audio fixes"; then
     # Audio power save fix
     sudo sh -c 'echo "options snd_hda_intel power_save=0" > /etc/modprobe.d/audio-power_save.conf'
     # PulseAudio configuration file
     mkdir -p ~/.config/pulse && cp $base_dir/config_files/pulse/default.pa ~/.config/pulse
-else
-    printf "Skipping $current_install_string installation...\n"
 fi
 
 printf "\n======| End of setup :).\n"
